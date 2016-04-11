@@ -28,6 +28,16 @@ function SessionHandler(db) {
         }
     };
 
+    this.isAdmin = function(req, res, next) {
+	    if (req.session.isAdmin) {
+		    next();
+	    }
+	    else {
+		    console.log("redirecting to dashboard");
+		    return res.redirect("/dashboard");
+	    }
+    }
+
     this.displayLoginPage = function(req, res, next) {
         return res.render("login", {
             userName: "",
@@ -70,7 +80,7 @@ function SessionHandler(db) {
             // Regenerating in each login
             req.session.regenerate(function() {
                 req.session.userId = user._id;
-
+		req.session.isAdmin = user.isAdmin;
                 if (user.isAdmin) {
                     return res.redirect("/benefits");
                 } else {
