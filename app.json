@@ -1,5 +1,5 @@
 {
-  "name": "CS132 Security",
+  "name": "cs132security",
   "description": "CS132 Security Lab; graciously based on OWASP Top 10 for Node apps.",
   "keywords": [
     "security",
