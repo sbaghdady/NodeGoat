@@ -18,7 +18,9 @@ function AllocationsHandler(db) {
          ** Would anything prevent an attacker from   **
          ** accessing a different user account?       **
          ***********************************************/
-        var userId = req.params.userId;
+       	// get actual user's id instead of requested in
+	// order to only display allocations for current user 
+	var userId = req.session.userId;
 
         allocationsDAO.getByUserId(userId, function(err, docs) {
             if (err) return next(err);

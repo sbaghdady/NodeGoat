@@ -81,6 +81,7 @@ function SessionHandler(db) {
             req.session.regenerate(function() {
                 req.session.userId = user._id;
 		req.session.isAdmin = user.isAdmin;
+
                 if (user.isAdmin) {
                     return res.redirect("/benefits");
                 } else {
