@@ -24,7 +24,7 @@
     "npm": "2.7.x"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node server.js"
   },
   "devDependencies": {
     "async": "^1.5.0",
