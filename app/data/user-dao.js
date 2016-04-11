@@ -90,11 +90,8 @@ function UserDAO(db) {
         // Helper function to compare passwords
         function comparePassword(fromDB, fromUser) {
             return fromDB === fromUser;
-            /*
-            // Fix for A2-Broken Auth
-            // compares decrypted password stored in this.addUser()
-            return bcrypt.compareSync(fromDB, fromUser);
-            */
+            //if you encrypt your password, you have to decrypt here
+            //better to use the bcrypt.compareSync function
         }
 
         usersCol.findOne({
@@ -102,7 +99,6 @@ function UserDAO(db) {
         }, validateUserDoc);
     };
 
-    // This is the good one, see the next function
     this.getUserById = function(userId, callback) {
         usersCol.findOne({
             _id: parseInt(userId)

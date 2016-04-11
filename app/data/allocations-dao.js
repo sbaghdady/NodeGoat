@@ -55,7 +55,6 @@ function AllocationsDAO(db) {
         });
     };
 
-    // This is the good implementation, respect the last one
     this.getByUserId = function(userId, callback) {
         var finalId = parseInt(userId);
 
