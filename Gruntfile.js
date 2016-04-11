@@ -4,7 +4,7 @@ var exec = require("child_process").exec;
 var sys = require("sys");
 
 var JS_FILES = ["Gruntfile.js", "app/assets/js/**", "config/config.js", "app/data/**/*.js",
-    "app/routes/**/*.js", "server.js", "test/**/*.js"
+    "app/routes/**/*.js", "server.js"
 ];
 
 
@@ -100,21 +100,7 @@ module.exports = function(grunt) {
                 logConcurrentOutput: true
             }
         },
-        mochaTest: {
-            options: {
-                reporter: "spec"
-            },
-            unit: {
-                src: ["test/unit/*.js"],
-            },
-            security: {
-                src: ["test/security/*.js"]
-            }
-        },
         env: {
-            test: {
-                NODE_ENV: "test"
-            }
         },
         retire: {
             js: [],
@@ -132,7 +118,6 @@ module.exports = function(grunt) {
     // Load NPM tasks
     grunt.loadNpmTasks("grunt-contrib-watch");
     grunt.loadNpmTasks("grunt-contrib-jshint");
-    grunt.loadNpmTasks("grunt-mocha-test");
     grunt.loadNpmTasks("grunt-nodemon");
     grunt.loadNpmTasks("grunt-concurrent");
     grunt.loadNpmTasks("grunt-env");
@@ -166,12 +151,6 @@ module.exports = function(grunt) {
 
     // Code Validation, beautification task(s).
     grunt.registerTask("precommit", ["jsbeautifier", "jshint"]);
-
-    // Test task.
-    grunt.registerTask("test", ["env:test", "mochaTest:unit"]);
-
-    // Security test task.
-    grunt.registerTask("testsecurity", ["env:test", "mochaTest:security"]);
 
     // start server.
     grunt.registerTask("run", ["precommit", "concurrent"]);
