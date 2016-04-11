@@ -12,25 +12,11 @@ function ProfileDAO(db) {
 
     var users = db.collection("users");
 
-    /* Fix for A6 - Sensitive Data Exposure
 
-    // Use crypto module to save sensitive data such as ssn, dob in encrypted format
-    var crypto = require("crypto");
-    var config = require("../../config/config");
-
-    // Helper function to encrypt data
-    var encrypt = function(toEncrypt) {
-        var cipher = crypto.createCipher(config.cryptoAlgo, config.cryptoKey);
-        return cipher.update(toEncrypt, "utf8", "hex") + cipher.final("hex");
-    };
-
-    // Helper function to decrypt data
-    var decrypt = function(toDecrypt) {
-        var decipher = crypto.createDecipher(config.cryptoAlgo, config.cryptoKey);
-        return decipher.update(toDecrypt, "hex", "utf8") + decipher.final("utf8");
-    };
-
-    */
+    /*************** SECURITY ISSUE ****************
+     ** Sensitive data should be handled with     **
+     ** encyrption. Check out the "crypto" module **
+     ***********************************************/
 
     this.updateUser = function(userId, firstName, lastName, ssn, dob, address, bankAcc, bankRouting, callback) {
 
@@ -52,21 +38,12 @@ function ProfileDAO(db) {
             user.bankRouting = bankRouting;
         }
         if (ssn) {
-            user.ssn = ssn;
+            user.ssn = ssn; //<- what if your server gets hacked?
+            //encrypt sensitive fields!
         }
         if (dob) {
             user.dob = dob;
         }
-        /*
-        // Fix for A7 - Sensitive Data Exposure
-        // Store encrypted ssn and DOB
-        if(ssn) {
-            user.ssn = encrypt(ssn);
-        }
-        if(dob) {
-            user.dob = encrypt(dob);
-        }
-        */
 
         users.update({
                 _id: parseInt(userId)
@@ -90,13 +67,11 @@ function ProfileDAO(db) {
             },
             function(err, user) {
                 if (err) return callback(err, null);
-                /*
-                // Fix for A7 - Sensitive Data Exposure
-                // Decrypt ssn and DOB values to display to user
-                user.ssn = user.ssn ? decrypt(user.ssn) : "";
-                user.dob = user.dob ? decrypt(user.dob) : "";
-                */
 
+                // Here, we're finding the user with userID and
+                // sending it back to the user, so if you encrypted
+                // fields when you inserted them, you need to decrypt
+                // them before you can use them.
                 callback(null, user);
             }
         );

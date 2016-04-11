@@ -7,10 +7,17 @@ function AllocationsHandler(db) {
 
 
     this.displayAllocations = function(req, res, next) {
-        /*
-        // Fix for A4 Insecure DOR -  take user id from session instead of from URL param
-        var userId = req.session.userId;
-        */
+
+        /*************** SECURITY ISSUE ****************
+         ** 'allocations' is a page that requires     **
+         ** a user to be logged in to access.         **
+         ** As you can see, accessing this page is    **
+         ** simply a request with a userId field.     **
+         ** What would happen if someone made a       **
+         ** request with a different userId here?     **
+         ** Would anything prevent an attacker from   **
+         ** accessing a different user account?       **
+         ***********************************************/
         var userId = req.params.userId;
 
         allocationsDAO.getByUserId(userId, function(err, docs) {

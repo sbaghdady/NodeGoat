@@ -1,6 +1,6 @@
 {
-  "name": "OWASP NodeGoat",
-  "description": "Educational tool to learn about OWASP Top 10 for node.js apps.",
+  "name": "CS132 Security",
+  "description": "CS132 Security Lab; graciously based on OWASP Top 10 for Node apps.",
   "keywords": [
     "security",
     "node.js",

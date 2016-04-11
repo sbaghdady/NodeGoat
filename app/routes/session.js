@@ -19,21 +19,6 @@ function SessionHandler(db) {
         });
     };
 
-    this.isAdminUserMiddleware = function(req, res, next) {
-        if (req.session.userId) {
-            userDAO.getUserById(req.session.userId, function(err, user) {
-                if (user && user.isAdmin) {
-                    next();
-                } else {
-                    return res.redirect("/login");
-                }
-            });
-        } else {
-            console.log("redirecting to login");
-            return res.redirect("/login");
-        }
-    };
-
     this.isLoggedInMiddleware = function(req, res, next) {
         if (req.session.userId) {
             next();
@@ -59,30 +44,30 @@ function SessionHandler(db) {
             var errorMessage = "Invalid username and/or password";
             var invalidUserNameErrorMessage = "Invalid username";
             var invalidPasswordErrorMessage = "Invalid password";
+
+            /*************** SECURITY ISSUE ****************
+             ** Why are two different error messages      **
+             ** bad?                                      **
+             ***********************************************/
             if (err) {
                 if (err.noSuchUser) {
                     return res.render("login", {
                         userName: userName,
                         password: "",
                         loginError: invalidUserNameErrorMessage
-                            //Fix for A2-2 Broken Auth - Uses identical error for both username, password error
-                            // loginError: errorMessage
                     });
                 } else if (err.invalidPassword) {
                     return res.render("login", {
                         userName: userName,
                         password: "",
                         loginError: invalidPasswordErrorMessage
-                            //Fix for A2-2 Broken Auth - Uses identical error for both username, password error
-                            // loginError: errorMessage
-
                     });
                 } else {
                     return next(err);
                 }
             }
+
             // Regenerating in each login
-            // TODO: Add another vulnerability related with not to do it
             req.session.regenerate(function() {
                 req.session.userId = user._id;
 
@@ -113,18 +98,21 @@ function SessionHandler(db) {
         });
     };
 
+
     function validateSignup(userName, firstName, lastName, password, verify, email, errors) {
 
         var USER_RE = /^.{1,20}$/;
         var FNAME_RE = /^.{1,100}$/;
         var LNAME_RE = /^.{1,100}$/;
         var EMAIL_RE = /^[\S]+@[\S]+\.[\S]+$/;
-        var PASS_RE = /^.{1,20}$/;
-        /*
-        //Fix for A2-2 - Broken Authentication -  requires stronger password
-        //(at least 8 characters with numbers and both lowercase and uppercase letters.)
-        var PASS_RE =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-        */
+        var PASS_RE = /^.{1,20}$/; //regex to ensure valid password
+
+        /*************** SECURITY ISSUE ****************
+         ** Stronger password regexes should be used; **
+         ** users should not be expected to create    **
+         ** strong passwords.                         **
+         ** Most common password in 2015? "123456"    **
+         ***********************************************/
 
         errors.userNameError = "";
         errors.firstNameError = "";
@@ -196,16 +184,7 @@ function SessionHandler(db) {
 
                     //prepare data for the user
                     prepareUserData(user, next);
-                    /*
-                    sessionDAO.startSession(user._id, function(err, sessionId) {
 
-                        if (err) return next(err);
-
-                        res.cookie("session", sessionId);
-                        req.session.userId = user._id;
-                        return res.render("dashboard", user);
-                    });
-                    */
                     req.session.regenerate(function() {
                         req.session.userId = user._id;
                         // Set userId property. Required for left nav menu links

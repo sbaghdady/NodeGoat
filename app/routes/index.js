@@ -5,6 +5,9 @@ var ContributionsHandler = require("./contributions");
 var AllocationsHandler = require("./allocations");
 var ErrorHandler = require("./error").errorHandler;
 
+// This page handles ROUTES. It checks whether a user is logged in, whether
+// they're an admin, and sends a user to whichever route they requested.
+
 var exports = function(app, db) {
 
     "use strict";
@@ -17,9 +20,6 @@ var exports = function(app, db) {
 
     // Middleware to check if a user is logged in
     var isLoggedIn = sessionHandler.isLoggedInMiddleware;
-
-    //Middleware to check if user has admin rights
-    var isAdmin = sessionHandler.isAdminUserMiddleware;
 
     // The main page of the app
     app.get("/", sessionHandler.displayWelcomePage);
@@ -36,6 +36,11 @@ var exports = function(app, db) {
     app.get("/logout", sessionHandler.displayLogoutPage);
 
     // The main page of the app
+    // There are two callbacks here. The first checks if the user is logged in 
+    // (see session.js 'isLoggedInMiddleware')
+    // The req and res is send to this function. If it returns next(),
+    // then it sends the req and res to displayWelcomePage.
+    // You can add more callbacks! (you could to fix the issue below!
     app.get("/dashboard", isLoggedIn, sessionHandler.displayWelcomePage);
 
     // Profile page
@@ -46,13 +51,16 @@ var exports = function(app, db) {
     app.get("/contributions", isLoggedIn, contributionsHandler.displayContributions);
     app.post("/contributions", isLoggedIn, contributionsHandler.handleContributionsUpdate);
 
+
+    /*************** SECURITY ISSUE ****************
+     ** The benefits page is only visible to      **
+     ** the administrator. However, is there      **
+     ** anything here preventing other users from **
+     ** directly accessing the route?             **
+     ***********************************************/
     // Benefits Page
     app.get("/benefits", isLoggedIn, benefitsHandler.displayBenefits);
     app.post("/benefits", isLoggedIn, benefitsHandler.updateBenefits);
-    /* Fix for A7 - checks user role to implement  Function Level Access Control
-     app.get("/benefits", isLoggedIn, isAdmin, benefitsHandler.displayBenefits);
-     app.post("/benefits", isLoggedIn, isAdmin, benefitsHandler.updateBenefits);
-     */
 
     // Allocations Page
     app.get("/allocations/:userId", isLoggedIn, allocationsHandler.displayAllocations);

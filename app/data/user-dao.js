@@ -16,6 +16,12 @@ function UserDAO(db) {
 
     this.addUser = function(userName, firstName, lastName, password, email, callback) {
 
+        /*************** SECURITY ISSUE ****************
+         ** Why shouldn't we store passwords in the   **
+         ** database using plaintext?                 **
+         ** Note: the bcrypt module helps fix this    **
+         ***********************************************/
+
         // Create user document
         var user = {
             userName: userName,
@@ -23,11 +29,6 @@ function UserDAO(db) {
             lastName: lastName,
             benefitStartDate: this.getRandomFutureDate(),
             password: password //received from request param
-                /*
-                // Fix for A2-1 - Broken Auth
-                // Stores password  in a safer way using one way encryption and salt hashing
-                password: bcrypt.hashSync(password, bcrypt.genSaltSync())
-                */
         };
 
         // Add email if set
