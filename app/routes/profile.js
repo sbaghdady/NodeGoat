@@ -12,7 +12,6 @@ function ProfileHandler(db) {
         profile.getByUserId(parseInt(userId), function(err, doc) {
             if (err) return next(err);
             doc.userId = userId;
-	    doc.csrftoken = req.csrfToken();
             return res.render("profile", doc);
         });
     };
