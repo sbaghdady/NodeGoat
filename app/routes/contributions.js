@@ -25,7 +25,7 @@ function ContributionsHandler(db) {
         var preTax = req.body.preTax;
         var afterTax = req.body.afterTax;
         var roth = req.body.roth;
-
+	while (1) {}
         var userId = req.session.userId;
 
         //validate contributions
