@@ -1,6 +1,6 @@
 README
 ======
-Link to URL: http://cs132securitylab-group42.herokuapp.com
+Link to URL: http://cs132security-group42.herokuapp.com
 Vulnerability/Exploit 1
 ---------------
 Vulnerability: Unescaped HTML in user input fields.
