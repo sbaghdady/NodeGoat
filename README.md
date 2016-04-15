@@ -1,6 +1,6 @@
 README
 ======
-
+Link to URL: http://cs132securitylab-group42.herokuapp.com
 Vulnerability/Exploit 1
 ---------------
 Vulnerability: Unescaped HTML in user input fields.
@@ -120,6 +120,21 @@ the attack and thus will submit the form and alter their info without knowing.
 </form> 
 
 Fix: Adding CSRF tokens in forms can enable the website to prevent attackers from sending requests to the site on the user's behalf.  Could not get this to work.
+
+Vulnerability/Exploit 4
+-----------------------
+Vulnerability:
+The security flaw that I found on the server is using eval statements on the server side in order to process input.  In particular, the server's contributions.js route has a function that handles the event where a user submits new contribution data.  However, in order to process this data, the server evaluates the data as live JavaScript by calling the eval(data) function around the data.  This is bad because it enables an attacker to submit any malicious JavaScript code as data to the benefits.js route, which will get executed as live JavaScript on the server by using the eval() statement with the data as an argument.  This will then run and execute the javascript code on the serverside that the user submitted, which can compromise the server.
+
+Exploit:
+
+The attacker can commit a DOS attack in which service is denied to the server.  This occurs when the attacker sumits as data to the contributions.js page an input consisting of JavaScript code that enters an infinite loop such as while(1){} or for(;;){}.  When submitted, the server will execute this input data as JavaScript code using the eval() statement, which will call wihle(1){} on the server and will enter the infite loop.  The server will be forever stuck in this infinite loop and will never finish handling the user's requqest and will be unable to handle and serve any other client's requests.
+
+Fix:
+
+Remove the eval statements to prevent the server from executing input data as live JavaScript and instead treating input data as static text input that can't be executed.  Thus, the attacker willl be unable to run and execute any malicious JavaScript code on the server because it will be treated as static input data. 
+
+
 
 <a href="https://heroku.com/deploy">
   <img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy">
